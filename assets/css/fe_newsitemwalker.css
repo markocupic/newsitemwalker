@@ -1,0 +1,13 @@
+.newsitemwalker_prev a:before {
+    content: "\00AB\00A0";
+}
+div.newsitemwalker_prev {
+    display: inline;
+    padding-right: 10px;
+}
+.newsitemwalker_next a:after {
+    content: "\00A0\00BB";
+}
+div.newsitemwalker_next {
+    display: inline;
+}
