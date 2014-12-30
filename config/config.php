@@ -27,12 +27,3 @@ array_insert($GLOBALS['FE_MOD'], 2, array
 		'newsitemwalker'     => 'Newsitemwalker'
 	)
 ));
-
-
-/**
- * -------------------------------------------------------------------------
- * CSS FOR THE FRONTEND OUTPUT
- * -------------------------------------------------------------------------
- */
-$GLOBALS['TL_CSS'][]  = 'system/modules/newsitemwalker/assets/css/fe_newsitemwalker.css'; 
- 

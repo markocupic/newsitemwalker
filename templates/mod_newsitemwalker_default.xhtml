@@ -1,11 +1,18 @@
+<?php
+    // Load Stylesheet
+    $GLOBALS['TL_CSS'][]  = 'system/modules/newsitemwalker/assets/css/fe_newsitemwalker.css';
+?>
+
 <div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
 
 <?php if ($this->prevLink):?>
-<div class="newsitemwalker_prev"><?php echo $this->prevLink; ?></div>
+    <div class="newsitemwalker_prev"><?php echo $this->prevLink; ?></div>
 <?php endif; ?>
 
 <?php if ($this->nextLink):?>
-<div class="newsitemwalker_next"><?php echo $this->nextLink; ?></div>
+    <div class="newsitemwalker_next"><?php echo $this->nextLink; ?></div>
 <?php endif; ?>
 
 </div>
+
+<?php //echo $this->showTemplateVars(); ?>

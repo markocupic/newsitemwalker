@@ -33,7 +33,6 @@ class Newsitemwalker extends \Module
         */
        protected $strTemplate = 'mod_newsitemwalker_default';
 
-
        /**
         * Display a wildcard in the back end
         * @return string
@@ -67,7 +66,6 @@ class Newsitemwalker extends \Module
               return parent::generate();
        }
 
-
        /**
         * Generate module
         */
@@ -98,21 +96,32 @@ class Newsitemwalker extends \Module
               // current time
               $time = time();
 
-              //previous new item
+              //previous news item
               $objPrevArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date<? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date DESC")->limit(1)->execute($objCurrentItem->date, $time, $time);
               if ($objPrevArticle->numRows > 0)
               {
                      $prevHref = $this->generateFrontendUrl($objPage->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ? '/' : '/items/') . ($objPrevArticle->alias != "" ? $objPrevArticle->alias : $objPrevArticle->id));
                      $this->Template->prevLink = '<a href="' . $prevHref . '" title="' . $GLOBALS['TL_LANG']['MSC']['prevArticle'][1] . '">' . $GLOBALS['TL_LANG']['MSC']['prevArticle'][0] . '</a>';
+                     $objNews = \NewsModel::findByPk($objPrevArticle->id);
+                     if ($objNews !== null)
+                     {
+                            $this->Template->prevNews = $objNews->row();
+                     }
               }
 
 
-              //next new item
+              //next news item
               $objNextArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date>? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date ASC")->limit(1)->execute($objCurrentItem->date, $time, $time);
               if ($objNextArticle->numRows > 0)
               {
                      $nextHref = $this->generateFrontendUrl($objPage->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ? '/' : '/items/') . ($objNextArticle->alias != "" ? $objNextArticle->alias : $objNextArticle->id));
                      $this->Template->nextLink = '<a href="' . $nextHref . '" title="' . $GLOBALS['TL_LANG']['MSC']['nextArticle'][1] . '">' . $GLOBALS['TL_LANG']['MSC']['nextArticle'][0] . '</a>';
+                     $objNews = \NewsModel::findByPk($objNextArticle->id);
+                     if ($objNews !== null)
+                     {
+                            $this->Template->nextNews = $objNews->row();
+                     }
               }
+
        }
 }
