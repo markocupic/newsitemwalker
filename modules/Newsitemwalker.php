@@ -107,6 +107,12 @@ class Newsitemwalker extends \Module
             if ($objNews !== null)
             {
                 $this->Template->prevNews = $objNews->row();
+                $this->Template->prevId = $objPrevArticle->id;
+                $objNewsArchivePrev = \NewsArchiveModel::findByPk($objPrevArticle->pid);
+                if($objNewsArchivePrev !== null)
+                {
+                    $this->Template->prevNewsParentArchive = $objNewsArchivePrev->row();
+                }
             }
         }
 
@@ -122,8 +128,13 @@ class Newsitemwalker extends \Module
             if ($objNews !== null)
             {
                 $this->Template->nextNews = $objNews->row();
+                $this->Template->nextId = $objNextArticle->id;
+                $objNewsArchiveNext = \NewsArchiveModel::findByPk($objNextArticle->pid);
+                if($objNewsArchiveNext !== null)
+                {
+                    $this->Template->nextNewsParentArchive = $objNewsArchiveNext->row();
+                }
             }
         }
-
     }
 }
