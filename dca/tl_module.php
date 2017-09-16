@@ -1,10 +1,11 @@
 <?php
 
 /**
-* Add palettes to tl_module
-*/
-$GLOBALS['TL_DCA']['tl_module']['palettes']['newsitemwalker'] = 'name,type;{config_legend},news_archives;{template_legend},newsItemWalkerTpl;{expert_legend:hide},cssID,space';
-
+ * Palettes
+ * The field tag_filter is only available if the tags extension is installed
+ * https://contao.org/de/erweiterungsliste/view/tags.html
+ */
+$GLOBALS['TL_DCA']['tl_module']['palettes']['newsitemwalker'] = 'name,type;{config_legend},news_archives,tag_filter;{template_legend},newsItemWalkerTpl;{expert_legend:hide},cssID,space';
 
 /**
  * Fields

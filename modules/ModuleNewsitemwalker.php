@@ -1,20 +1,5 @@
 <?php
 
-/**
- * Contao Open Source CMS
- *
- * Copyright (C) 2005-2012 Leo Feyer
- *
- * @package Newsitemwalker
- * @author Marko Cupic, <m.cupic@gmx.ch>
- * @link    http://contao.org
- * @license http://www.gnu.org/licenses/lgpl-3.0.html LGPL
- */
-
-/**
- * Run in a custom namespace, so the class can be replaced
- */
-
 namespace Markocupic\Newsitemwalker;
 
 
@@ -26,6 +11,8 @@ use Contao\NewsModel;
 use Contao\Module;
 use Contao\PageModel;
 use Contao\Config;
+use Contao\Database;
+
 
 /**
  * Class ModuleNewsitemwalker
@@ -50,7 +37,7 @@ class ModuleNewsitemwalker extends Module
         if (TL_MODE == 'BE')
         {
             $objTemplate = new BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### NEWSITEM-WALKER ###';
+            $objTemplate->wildcard = '### ' . utf8_strtoupper($GLOBALS['TL_LANG']['FMD']['newsitemwalker'][0]) . ' ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -105,8 +92,18 @@ class ModuleNewsitemwalker extends Module
         // current time
         $time = time();
 
+
+        // Get tagged news items and create sql string
+        $arrFilter = $this->getTaggedNewsItems();
+        $strFilter = '';
+        if (count($arrFilter) > 0)
+        {
+            $strFilter .= ' AND id IN (' . implode(',', $arrFilter) . ')';
+        }
+
+
         //previous news item
-        $objPrevArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date<? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date DESC")->limit(1)->execute($objCurrentItem->date, $time, $time);
+        $objPrevArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date<? AND (" . $queryStr . ")" . $strFilter . " AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date DESC")->limit(1)->execute($objCurrentItem->date, $time, $time);
         if ($objPrevArticle->numRows > 0)
         {
 
@@ -128,7 +125,7 @@ class ModuleNewsitemwalker extends Module
 
 
         //next news item
-        $objNextArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date>? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date ASC")->limit(1)->execute($objCurrentItem->date, $time, $time);
+        $objNextArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date>? AND (" . $queryStr . ")" . $strFilter . " AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date ASC")->limit(1)->execute($objCurrentItem->date, $time, $time);
         if ($objNextArticle->numRows > 0)
         {
             $nextHref = $objPageModel->getFrontendUrl((Config::get('useAutoItem') ? '/' : '/items/') . ($objNextArticle->alias ?: $objNextArticle->id));
@@ -146,5 +143,31 @@ class ModuleNewsitemwalker extends Module
                 }
             }
         }
+    }
+
+    /**
+     * @return array
+     */
+    private function getTaggedNewsItems()
+    {
+        $arrReturn = array();
+        if(Database::getInstance()->tableExists('tl_tag'))
+        {
+            if (strlen($this->tag_filter))
+            {
+                $tags = preg_split("/,/", $this->tag_filter);
+                $placeholders = array();
+                foreach ($tags as $tag)
+                {
+                    array_push($placeholders, '?');
+                }
+                array_push($tags, 'tl_news');
+                $arrReturn = $this->Database->prepare("SELECT tid FROM tl_tag WHERE tag IN (" . join($placeholders, ',') . ") AND from_table = ? ORDER BY tag ASC")
+                    ->execute($tags)
+                    ->fetchEach('tid');
+            }
+        }
+
+        return $arrReturn;
     }
 }

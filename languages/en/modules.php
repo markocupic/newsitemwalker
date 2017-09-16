@@ -15,4 +15,4 @@
 /**
  * Front end modules
  */
-$GLOBALS['TL_LANG']['FMD']['newsitemwalker'] = array('news-item-walker', 'Generates two links. When placing the module in head of a newsreader-module, you can jump between each news-item by dropping the next or previous buttons.');
+$GLOBALS['TL_LANG']['FMD']['newsitemwalker'] = array('News item walker', 'Generates two links. When placing the module in head of a newsreader-module, you can jump between each news-item by dropping the next or previous buttons.');
