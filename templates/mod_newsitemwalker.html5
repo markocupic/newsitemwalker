@@ -14,5 +14,3 @@
 <?php endif; ?>
 
 </div>
-
-<?php //echo $this->showTemplateVars(); ?>

@@ -29,7 +29,7 @@ use Contao\Config;
 
 /**
  * Class ModuleNewsitemwalker
- * @package MCupic
+ * @package Markocupic\Newsitemwalker
  */
 class ModuleNewsitemwalker extends Module
 {
@@ -59,7 +59,7 @@ class ModuleNewsitemwalker extends Module
         }
 
         // Set the item from the auto_item parameter
-        if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+        if (Config::get('useAutoItem') && isset($_GET['auto_item']))
         {
             Input::setGet('items', Input::get('auto_item'));
         }

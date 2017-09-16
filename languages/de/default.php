@@ -15,8 +15,8 @@
  * permanent text corrections which are update-safe. 
  */
  
-$GLOBALS['TL_LANG']['MSC']['nextArticle']['0'] = "nächster Artikel";
-$GLOBALS['TL_LANG']['MSC']['nextArticle']['1'] = "gehe zum nächsten Artikel";
+$GLOBALS['TL_LANG']['MSC']['nextArticle']['0'] = "neuerer Artikel";
+$GLOBALS['TL_LANG']['MSC']['nextArticle']['1'] = "gehe zum nächst neueren Artikel";
 $GLOBALS['TL_LANG']['MSC']['prevArticle']['0'] = "älterer Artikel";
 $GLOBALS['TL_LANG']['MSC']['prevArticle']['1'] = "gehe zum nächst älteren Artikel";
 
