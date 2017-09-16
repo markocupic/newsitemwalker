@@ -20,5 +20,4 @@ $GLOBALS['TL_LANG']['tl_module']['newsItemWalkerTpl']['1'] = "Hier können Sie d
 $GLOBALS['TL_LANG']['tl_module']['news_archives']['0'] = "Nachrichtenarchive wählen";
 $GLOBALS['TL_LANG']['tl_module']['news_archives']['1'] = "Wählen Sie die Nachrichtenarchive aus, die berücksichtigt werden sollen.";
 $GLOBALS['TL_LANG']['tl_module']['template_legend'] = "Template-Einstellungen";
- 
-?>
+

@@ -18,4 +18,4 @@
 $GLOBALS['TL_LANG']['FMD']['newsitemwalker']['0'] = "News-Item-Walker";
 $GLOBALS['TL_LANG']['FMD']['newsitemwalker']['1'] = "Generiert zwei Links. Wenn das newsitemwalker-Modul oberhalb eines newsreader-Moduls, platziert wird, kann ganz einfach zwischen den einzelnen News-Artikeln hin und her navigiert werden.";
  
-?>
+

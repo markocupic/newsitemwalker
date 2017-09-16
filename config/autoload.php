@@ -15,7 +15,7 @@
  */
 ClassLoader::addNamespaces(array
 (
-      'MCupic',
+      'Markocupic',
 ));
 
 /**
@@ -23,7 +23,7 @@ ClassLoader::addNamespaces(array
  */
 ClassLoader::addClasses(array
 (
-	'MCupic\Newsitemwalker' => 'system/modules/newsitemwalker/modules/Newsitemwalker.php',
+	'Markocupic\Newsitemwalker\ModuleNewsitemwalker' => 'system/modules/newsitemwalker/modules/ModuleNewsitemwalker.php',
 ));
 
 
@@ -32,5 +32,5 @@ ClassLoader::addClasses(array
  */
 TemplateLoader::addFiles(array
 (
-	'mod_newsitemwalker_default' => 'system/modules/newsitemwalker/templates',
+	'mod_newsitemwalker' => 'system/modules/newsitemwalker/templates',
 ));

@@ -14,24 +14,31 @@
 /**
  * Run in a custom namespace, so the class can be replaced
  */
-namespace MCupic;
 
+namespace Markocupic\Newsitemwalker;
+
+
+use Contao\BackendTemplate;
+use Contao\Input;
+use Contao\FrontendTemplate;
+use Contao\NewsArchiveModel;
+use Contao\NewsModel;
+use Contao\Module;
+use Contao\PageModel;
+use Contao\Config;
 
 /**
- * Class Newsitemwalker
- *
- * @copyright  Marko Cupic 2011
- * @author     Marko Cupic
- * @package Newsitemwalker
+ * Class ModuleNewsitemwalker
+ * @package MCupic
  */
-class Newsitemwalker extends \Module
+class ModuleNewsitemwalker extends Module
 {
 
     /**
      * Template
      * @var string
      */
-    protected $strTemplate = 'mod_newsitemwalker_default';
+    protected $strTemplate = 'mod_newsitemwalker';
 
     /**
      * Display a wildcard in the back end
@@ -42,8 +49,8 @@ class Newsitemwalker extends \Module
 
         if (TL_MODE == 'BE')
         {
-            $objTemplate = new \BackendTemplate('be_wildcard');
-            $objTemplate->wildcard = '### NEWS-ITEM-WALKER ###';
+            $objTemplate = new BackendTemplate('be_wildcard');
+            $objTemplate->wildcard = '### NEWSITEM-WALKER ###';
             $objTemplate->title = $this->headline;
             $objTemplate->id = $this->id;
             $objTemplate->link = $this->name;
@@ -54,11 +61,11 @@ class Newsitemwalker extends \Module
         // Set the item from the auto_item parameter
         if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
         {
-            \Input::setGet('items', \Input::get('auto_item'));
+            Input::setGet('items', Input::get('auto_item'));
         }
 
         // Return if no news item has been specified
-        if (!\Input::get('items'))
+        if (!Input::get('items'))
         {
             return '';
         }
@@ -73,15 +80,17 @@ class Newsitemwalker extends \Module
     {
 
         global $objPage;
+        $objPageModel = PageModel::findByPk($objPage->id);
+
         if ($this->newsItemWalkerTpl == "")
         {
             $this->newsItemWalkerTpl = $this->strTemplate;
         }
-        $this->Template = new \FrontendTemplate($this->newsItemWalkerTpl);
+        $this->Template = new FrontendTemplate($this->newsItemWalkerTpl);
 
 
         //get the pid of the current item
-        $objCurrentItem = $this->Database->prepare("SELECT date, pid FROM tl_news WHERE id=? OR alias=?")->limit(1)->execute(\Input::get('items'), \Input::get('items'));
+        $objCurrentItem = $this->Database->prepare("SELECT date, pid FROM tl_news WHERE id=? OR alias=?")->limit(1)->execute(Input::get('items'), Input::get('items'));
 
         // backwards compatibility
         $queryStr = "pid=" . $objCurrentItem->pid;
@@ -100,16 +109,17 @@ class Newsitemwalker extends \Module
         $objPrevArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date<? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date DESC")->limit(1)->execute($objCurrentItem->date, $time, $time);
         if ($objPrevArticle->numRows > 0)
         {
-            $prevHref = $this->generateFrontendUrl($objPage->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ? '/' : '/items/') . ($objPrevArticle->alias != "" ? $objPrevArticle->alias : $objPrevArticle->id));
+
+            $prevHref = $objPageModel->getFrontendUrl((Config::get('useAutoItem') ? '/' : '/items/') . ($objPrevArticle->alias ?: $objPrevArticle->id));
             $this->Template->prevHref = $prevHref;
             $this->Template->prevLink = '<a href="' . $prevHref . '" title="' . $GLOBALS['TL_LANG']['MSC']['prevArticle'][1] . '">' . $GLOBALS['TL_LANG']['MSC']['prevArticle'][0] . '</a>';
-            $objNews = \NewsModel::findByPk($objPrevArticle->id);
+            $objNews = NewsModel::findByPk($objPrevArticle->id);
             if ($objNews !== null)
             {
                 $this->Template->prevNews = $objNews->row();
                 $this->Template->prevId = $objPrevArticle->id;
-                $objNewsArchivePrev = \NewsArchiveModel::findByPk($objPrevArticle->pid);
-                if($objNewsArchivePrev !== null)
+                $objNewsArchivePrev = NewsArchiveModel::findByPk($objPrevArticle->pid);
+                if ($objNewsArchivePrev !== null)
                 {
                     $this->Template->prevNewsParentArchive = $objNewsArchivePrev->row();
                 }
@@ -121,16 +131,16 @@ class Newsitemwalker extends \Module
         $objNextArticle = $this->Database->prepare("SELECT id,alias FROM tl_news WHERE date>? AND (" . $queryStr . ") AND (start='' OR start<?) AND (stop='' OR stop>?) AND published=1 ORDER BY date ASC")->limit(1)->execute($objCurrentItem->date, $time, $time);
         if ($objNextArticle->numRows > 0)
         {
-            $nextHref = $this->generateFrontendUrl($objPage->row(), ($GLOBALS['TL_CONFIG']['useAutoItem'] ? '/' : '/items/') . ($objNextArticle->alias != "" ? $objNextArticle->alias : $objNextArticle->id));
+            $nextHref = $objPageModel->getFrontendUrl((Config::get('useAutoItem') ? '/' : '/items/') . ($objNextArticle->alias ?: $objNextArticle->id));
             $this->Template->nextHref = $nextHref;
             $this->Template->nextLink = '<a href="' . $nextHref . '" title="' . $GLOBALS['TL_LANG']['MSC']['nextArticle'][1] . '">' . $GLOBALS['TL_LANG']['MSC']['nextArticle'][0] . '</a>';
-            $objNews = \NewsModel::findByPk($objNextArticle->id);
+            $objNews = NewsModel::findByPk($objNextArticle->id);
             if ($objNews !== null)
             {
                 $this->Template->nextNews = $objNews->row();
                 $this->Template->nextId = $objNextArticle->id;
-                $objNewsArchiveNext = \NewsArchiveModel::findByPk($objNextArticle->pid);
-                if($objNewsArchiveNext !== null)
+                $objNewsArchiveNext = NewsArchiveModel::findByPk($objNextArticle->pid);
+                if ($objNewsArchiveNext !== null)
                 {
                     $this->Template->nextNewsParentArchive = $objNewsArchiveNext->row();
                 }
